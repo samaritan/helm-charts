@@ -1,0 +1,48 @@
+# Container images
+# 
+registry: "110921400520.dkr.ecr.us-east-2.amazonaws.com"
+
+# File system required to support persistence in certain containers
+# 
+storage:
+  provider: "local"  # Must be `local` or `efs`
+  providers:
+    efs:
+      fileSystemId: ""  # Must be a valid file system identifier for an AWS EFS
+    local:
+      root: "/data/"
+
+# Ingress used to make services publicly accessible via a URL
+#
+ingress:
+  provider: "public"  # Must be `public` or `alb`
+  hostname:
+    api: "api.samaritan.works"
+    web: "explore.samaritan.works"
+
+# MySQL database used by Samaritan to persist data
+#
+mysql:
+  external: false
+  externalName: ""
+  port: 3306
+  application:
+    user: "samaritan"
+    password: "password"
+  root:
+    password: "password"
+
+# RabbitMQ used by services that compose Samaritan to communicate with one another
+#
+rabbitmq:
+  external: false
+  externalName: ""
+  protocol: "amqp"
+  port: 5672
+  user: "samaritan"
+  password: "password"
+
+# Redis used by the `repository` service to cache content
+#
+redis:
+  password: "password"

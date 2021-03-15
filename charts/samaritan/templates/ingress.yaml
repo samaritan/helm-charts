@@ -1,0 +1,71 @@
+---
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+apiVersion: networking.k8s.io/v1
+{{- else }}
+apiVersion: networking.k8s.io/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: api
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.provider }}
+    {{- if eq .Values.ingress.provider "alb" }}
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:110921400520:certificate/1fad0fac-fab0-4356-aabd-67e36f6af4fc
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.ingress.hostname.api }}
+    {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.hostname.api }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+              service:
+                name: gateway
+                port:
+                  number: 80
+              {{- else }}
+              serviceName: gateway
+              servicePort: 80
+              {{- end }}
+---
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+apiVersion: networking.k8s.io/v1
+{{- else }}
+apiVersion: networking.k8s.io/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: web-gui
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.provider }}
+    {{- if eq .Values.ingress.provider "alb" }}
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:110921400520:certificate/1fad0fac-fab0-4356-aabd-67e36f6af4fc
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.ingress.hostname.web }}
+    {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.hostname.web }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+              service:
+                name: web-gui
+                port:
+                  number: 80
+              {{- else }}
+              serviceName: web-gui
+              servicePort: 80
+              {{- end }}

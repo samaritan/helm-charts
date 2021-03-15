@@ -1,0 +1,1414 @@
+{{- if not .Values.mysql.external }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    application: mysql
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: mysql
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: mysql
+        tier: backend
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - name: mysql
+              protocol: TCP
+              containerPort: {{ .Values.mysql.port }}
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.root_password
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.password
+          volumeMounts:
+            - name: volume
+              mountPath: "/var/lib/mysql"
+      volumes:
+        - name: volume
+          persistentVolumeClaim:
+            claimName: pvc-mysql
+{{- end }}
+{{- if not .Values.rabbitmq.external }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  labels:
+    application: rabbitmq
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: rabbitmq
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: rabbitmq
+        tier: backend
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3.7
+          ports:
+            - name: amqp
+              protocol: TCP
+              containerPort: 5672
+            - name: http
+              protocol: TCP
+              containerPort: 15672
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+          volumeMounts:
+            - name: volume
+              mountPath: "/var/lib/rabbitmq/mnesia"
+      volumes:
+        - name: volume
+          persistentVolumeClaim:
+            claimName: pvc-rabbitmq
+{{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    application: redis
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: redis
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: redis
+        tier: backend
+    spec:
+      containers:
+        - name: redis
+          image: redis:6.0
+          resources:
+            requests:
+              memory: "4Gi"
+          command:
+            - redis-server
+            - "/usr/local/etc/redis/redis.conf"
+          args:
+            - --requirepass
+            - $(REDIS_PASSWORD)
+          ports:
+            - name: redis
+              protocol: TCP
+              containerPort: 6379
+          volumeMounts:
+            - mountPath: /usr/local/etc/redis/
+              name: redis
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: redis.password
+      volumes:
+        - name: redis
+          configMap:
+            name: redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: measures
+  labels:
+    application: measures
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: measures
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: measures
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+        - name: init-mysql
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup mysql; do echo "Waiting for MySQL"; sleep 3; done;',
+            ]
+      containers:
+        - name: measures
+          image: {{ .Values.registry }}/samaritan/measures:latest
+          resources:
+            requests:
+              cpu: "2"
+              memory: "4Gi"
+          env:
+            - name: MYSQL_HOST
+              value: "mysql"
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.password
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  labels:
+    application: gateway
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: gateway
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: gateway
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: nginx
+          image: {{ .Values.registry }}/nginx:1.19-alpine
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 80
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-gateway
+        - name: gateway
+          image: {{ .Values.registry }}/samaritan/gateway:latest
+          env:
+            - name: GATEWAY_HOST
+              value: "127.0.0.1"
+            - name: GATEWAY_PORT
+              value: "5000"
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+      volumes:
+        - name: nginx-gateway
+          configMap:
+            name: nginx-gateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-gui
+  labels:
+    application: web-gui
+    tier: frontend
+spec:
+  selector:
+    matchLabels:
+      application: web-gui
+      tier: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: web-gui
+        tier: frontend
+    spec:
+      containers:
+        - name: web-gui
+          image: {{ .Values.registry }}/samaritan/web-gui:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: REACT_APP_API_URL
+              value: "//api.samaritan.works"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project
+  labels:
+    application: project
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: project
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: project
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: project
+          image: {{ .Values.registry }}/samaritan/project:latest
+          env:
+            - name: MYSQL_HOST
+              value: "mysql"
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.password
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: repository
+  labels:
+    application: repository
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: repository
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: repository
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+        - name: init-redis
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup redis; do echo "Waiting for Redis"; sleep 3; done;',
+            ]
+      containers:
+        - name: repository
+          image: {{ .Values.registry }}/samaritan/repository:latest
+          resources:
+            requests:
+              cpu: "1"
+              memory: "4Gi"
+          env:
+            - name: REPOSITORIES_ROOT
+              value: "/data/repositories"
+            - name: REDIS_HOST
+              value: "redis"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: redis.password
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+          volumeMounts:
+            - name: volume
+              {{- if eq .Values.storage.provider "local" }}
+              mountPath: "/data/repositories"
+              {{- else if eq .Values.storage.provider "efs" }}
+              mountPath: "/data/"
+              {{- end }}
+      volumes:
+        - name: volume
+          persistentVolumeClaim:
+            claimName: pvc-repositories
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics
+  labels:
+    application: metrics
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics
+          image: {{ .Values.registry }}/samaritan/metrics:latest
+          env:
+            - name: MYSQL_HOST
+              value: "mysql"
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.password
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parser
+  labels:
+    application: parser
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: parser
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: parser
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: parser
+          image: {{ .Values.registry }}/samaritan/parser:latest
+          resources:
+            requests:
+              memory: "4Gi"
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-churn
+  labels:
+    application: metrics-churn
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-churn
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-churn
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-churn
+          image: {{ .Values.registry }}/samaritan/metrics-churn:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-collaboration
+  labels:
+    application: metrics-collaboration
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-collaboration
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-collaboration
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-collaboration
+          image: {{ .Values.registry }}/samaritan/metrics-collaboration:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-contribution
+  labels:
+    application: metrics-contribution
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-contribution
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-contribution
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-contribution
+          image: {{ .Values.registry }}/samaritan/metrics-contribution:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-complexity
+  labels:
+    application: metrics-complexity
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-complexity
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-complexity
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-complexity
+          image: {{ .Values.registry }}/samaritan/metrics-complexity:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-functionchurn
+  labels:
+    application: metrics-functionchurn
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-functionchurn
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-functionchurn
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-functionchurn
+          image: {{ .Values.registry }}/samaritan/metrics-functionchurn:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-hunk
+  labels:
+    application: metrics-hunk
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-hunk
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-hunk
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-hunk
+          image: {{ .Values.registry }}/samaritan/metrics-hunk:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-interactivechurn
+  labels:
+    application: metrics-interactivechurn
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-interactivechurn
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-interactivechurn
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-interactivechurn
+          image: {{ .Values.registry }}/samaritan/metrics-interactivechurn:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-keyword
+  labels:
+    application: metrics-keyword
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-keyword
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-keyword
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-keyword
+          image: {{ .Values.registry }}/samaritan/metrics-keyword:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-loc
+  labels:
+    application: metrics-loc
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-loc
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-loc
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-loc
+          image: {{ .Values.registry }}/samaritan/metrics-loc:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-messagetokens
+  labels:
+    application: metrics-messagetokens
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-messagetokens
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-messagetokens
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-messagetokens
+          image: {{ .Values.registry }}/samaritan/metrics-messagetokens:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-nesting
+  labels:
+    application: metrics-nesting
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-nesting
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-nesting
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-nesting
+          image: {{ .Values.registry }}/samaritan/metrics-nesting:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-offender
+  labels:
+    application: metrics-offender
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-offender
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-offender
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-offender
+          image: {{ .Values.registry }}/samaritan/metrics-offender:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-ownership
+  labels:
+    application: metrics-ownership
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-ownership
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-ownership
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-ownership
+          image: {{ .Values.registry }}/samaritan/metrics-ownership:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-pastauthors
+  labels:
+    application: metrics-pastauthors
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-pastauthors
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-pastauthors
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-pastauthors
+          image: {{ .Values.registry }}/samaritan/metrics-pastauthors:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-pastchanges
+  labels:
+    application: metrics-pastchanges
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-pastchanges
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-pastchanges
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-pastchanges
+          image: {{ .Values.registry }}/samaritan/metrics-pastchanges:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-patchtokens
+  labels:
+    application: metrics-patchtokens
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-patchtokens
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-patchtokens
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-patchtokens
+          image: {{ .Values.registry }}/samaritan/metrics-patchtokens:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-relativechurn
+  labels:
+    application: metrics-relativechurn
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      application: metrics-relativechurn
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        application: metrics-relativechurn
+        tier: backend
+    spec:
+      initContainers:
+        - name: init-rabbitmq
+          image: {{ .Values.registry }}/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-relativechurn
+          image: {{ .Values.registry }}/samaritan/metrics-relativechurn:latest
+          env:
+            - name: RABBIT_PROTOCOL
+              value: "{{ .Values.rabbitmq.protocol }}"
+            - name: RABBIT_HOST
+              value: "rabbitmq"
+            - name: RABBIT_PORT
+              value: "{{ .Values.rabbitmq.port }}"
+            - name: RABBIT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_user
+            - name: RABBIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: rabbitmq.default_pass

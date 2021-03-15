@@ -1,0 +1,84 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  {{- if .Values.mysql.external }}
+  type: ExternalName
+  externalName: {{ .Values.mysql.externalName }}
+  {{- else }}
+  type: ClusterIP
+  selector:
+    application: mysql
+    tier: backend
+  ports:
+    - name: mysql
+      protocol: TCP
+      port: {{ .Values.mysql.port }}
+      targetPort: {{ .Values.mysql.port }}
+  {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+spec:
+  type: NodePort
+  selector:
+    application: gateway
+    tier: backend
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-gui
+spec:
+  type: NodePort
+  selector:
+    application: web-gui
+    tier: frontend
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+spec:
+  {{- if .Values.rabbitmq.external }}
+  type: ExternalName
+  externalName: {{ .Values.rabbitmq.externalName }}
+  {{- else }}
+  type: NodePort
+  selector:
+    application: rabbitmq
+    tier: backend
+  ports:
+    - name: amqp
+      protocol: TCP
+      port: {{ .Values.rabbitmq.port }}
+      targetPort: {{ .Values.rabbitmq.port }}
+  {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  selector:
+    application: redis
+    tier: backend
+  ports:
+    - name: redis
+      protocol: TCP
+      port: 6379
+      targetPort: 6379

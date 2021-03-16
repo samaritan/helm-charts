@@ -1,48 +1,68 @@
 # Container images
 # 
+# registry -- Container registry from which all images are pulled.
 registry: "110921400520.dkr.ecr.us-east-2.amazonaws.com"
 
 # File system required to support persistence in certain containers
 # 
 storage:
-  provider: "local"  # Must be `local` or `efs`
+  # -- Storage provider to use for persistent storage in stateful services. Must be one of `local` for volume backed by [`hostPath`](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath) or `efs` for volume backed by Amazon Elastic File System.
+  provider: "local"
   providers:
     efs:
-      fileSystemId: ""  # Must be a valid file system identifier for an AWS EFS
+      # -- Unique identifier assigned to the Amazon Elastic File System (EFS).
+      fileSystemId: ""
     local:
+      # -- Absolute path of the directory on the node that will host the Kubernetes pods that will form the root of the persistent volume mapped onto the pods.
       root: "/data/"
 
 # Ingress used to make services publicly accessible via a URL
 #
 ingress:
+  # -- Ingress provider to use to provision publicly accessible URLs for services. Must be one of `public` for [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/) or `alb` for [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/).
   provider: "public"  # Must be `public` or `alb`
   hostname:
+    # -- URL to use for the Samaritan API Service endpoint.
     api: "api.samaritan.works"
+    # -- URL to use for the Samaritan Web Application endpoint.
     web: "explore.samaritan.works"
 
 # MySQL database used by Samaritan to persist data
 #
 mysql:
+  # -- Set to `true` if you wish you use a MySQL instance provisioned outside of the Kubernetes deployment.
   external: false
+  # -- URL of the external MySQL instance.
   externalName: ""
+  # -- MySQL port.
   port: 3306
   application:
+    # -- MySQL application user. The services that need to persist data to a MySQL database will use this as the user.
     user: "samaritan"
+    # -- **[Required]** MySQL application password. The services that need to persist data to a MySQL database will use this as the password.
     password: null
   root:
+    # -- **[Required]** MySQL root password.
     password: null
 
 # RabbitMQ used by services that compose Samaritan to communicate with one another
 #
 rabbitmq:
+  # -- Set to `true` if you wish you use a RabbitMQ instance provisioned outside of the Kubernetes deployment.
   external: false
+  # -- URL of the external RabbitMQ instance.
   externalName: ""
+  # -- URI scheme to use when connecting to RabbitMQ. Must be one of `amqp` for an unsecure connection or `amqps` for a secure connection.
   protocol: "amqp"
+  # -- RabbitMQ port.
   port: 5672
+  # -- RabbitMQ application user. The services that use RabbitMQ for communication will use this as the user.
   user: "samaritan"
+  # -- **[Required]** RabbitMQ application password. The services that use RabbitMQ for communication will use this as the password.
   password: null
 
 # Redis used by the `repository` service to cache content
 #
 redis:
+  # -- **[Required]** Redis application password. The services that use Redis for caching will use this as the password.
   password: null

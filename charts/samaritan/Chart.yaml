@@ -1,5 +1,13 @@
 apiVersion: v2
-version: 0.1.0-alpha
 name: samaritan
-type: application
+version: 0.1.0-alpha
+kubeVersion: v1.18-0 - 1.20-0
 description: Platform to collect and analyze vulnerability discovery metrics.
+type: application
+home: https://samaritan.works/
+sources:
+  - https://github.com/samaritan
+maintainers:
+  - name: Nuthan Munaiah
+    email: nuthan.munaiah@securedecisions.com
+    url: https://nuthanmunaiah.github.io/

@@ -28,9 +28,9 @@ mysql:
   port: 3306
   application:
     user: "samaritan"
-    password: "password"
+    password: null
   root:
-    password: "password"
+    password: null
 
 # RabbitMQ used by services that compose Samaritan to communicate with one another
 #
@@ -40,9 +40,9 @@ rabbitmq:
   protocol: "amqp"
   port: 5672
   user: "samaritan"
-  password: "password"
+  password: null
 
 # Redis used by the `repository` service to cache content
 #
 redis:
-  password: "password"
+  password: null

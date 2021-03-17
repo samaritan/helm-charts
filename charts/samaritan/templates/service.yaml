@@ -58,7 +58,7 @@ spec:
   type: ExternalName
   externalName: {{ .Values.rabbitmq.externalName }}
   {{- else }}
-  type: NodePort
+  type: ClusterIP
   selector:
     application: rabbitmq
     tier: backend

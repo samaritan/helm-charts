@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: mysql
     tier: backend
@@ -56,6 +57,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rabbitmq
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: rabbitmq
     tier: backend
@@ -105,6 +107,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: redis
     tier: backend
@@ -154,6 +157,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: measures
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: measures
     tier: backend
@@ -229,6 +233,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gateway
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: gateway
     tier: backend
@@ -295,6 +300,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web-gui
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: web-gui
     tier: frontend
@@ -323,6 +329,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: project
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: project
     tier: backend
@@ -386,6 +393,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: repository
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: repository
     tier: backend
@@ -469,6 +477,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics
     tier: backend
@@ -532,6 +541,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: parser
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: parser
     tier: backend
@@ -584,6 +594,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-churn
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-churn
     tier: backend
@@ -633,6 +644,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-collaboration
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-collaboration
     tier: backend
@@ -682,6 +694,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-contribution
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-contribution
     tier: backend
@@ -731,6 +744,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-complexity
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-complexity
     tier: backend
@@ -780,6 +794,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-functionchurn
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-functionchurn
     tier: backend
@@ -829,6 +844,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-hunk
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-hunk
     tier: backend
@@ -878,6 +894,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-interactivechurn
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-interactivechurn
     tier: backend
@@ -927,6 +944,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-keyword
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-keyword
     tier: backend
@@ -976,6 +994,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-loc
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-loc
     tier: backend
@@ -1025,6 +1044,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-messagetokens
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-messagetokens
     tier: backend
@@ -1074,6 +1094,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-nesting
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-nesting
     tier: backend
@@ -1123,6 +1144,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-offender
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-offender
     tier: backend
@@ -1172,6 +1194,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-ownership
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-ownership
     tier: backend
@@ -1221,6 +1244,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-pastauthors
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-pastauthors
     tier: backend
@@ -1270,6 +1294,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-pastchanges
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-pastchanges
     tier: backend
@@ -1319,6 +1344,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-patchtokens
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-patchtokens
     tier: backend
@@ -1368,6 +1394,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metrics-relativechurn
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     application: metrics-relativechurn
     tier: backend

@@ -7,6 +7,7 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: api
+  namespace: {{ .Release.Namespace | quote }}
   annotations:
     kubernetes.io/ingress.class: {{ .Values.ingress.provider }}
     {{- if eq .Values.ingress.provider "alb" }}
@@ -43,6 +44,7 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: web-gui
+  namespace: {{ .Release.Namespace | quote }}
   annotations:
     kubernetes.io/ingress.class: {{ .Values.ingress.provider }}
     {{- if eq .Values.ingress.provider "alb" }}

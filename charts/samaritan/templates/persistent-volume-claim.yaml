@@ -3,6 +3,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: pvc-repositories
+  namespace: {{ .Release.Namespace | quote }}
 spec:
   accessModes:
     - ReadWriteMany
@@ -21,6 +22,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: pvc-rabbitmq
+  namespace: {{ .Release.Namespace | quote }}
 spec:
   accessModes:
     - ReadWriteMany
@@ -40,6 +42,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: pvc-mysql
+  namespace: {{ .Release.Namespace | quote }}
 spec:
   accessModes:
     - ReadWriteMany

@@ -20,6 +20,7 @@ spec:
         application: mysql
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: mysql
           image: mysql:8.0
@@ -73,6 +74,7 @@ spec:
         application: rabbitmq
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: rabbitmq
           image: rabbitmq:3.7
@@ -123,6 +125,7 @@ spec:
         application: redis
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: redis
           image: redis:6.0
@@ -173,6 +176,7 @@ spec:
         application: measures
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -249,6 +253,7 @@ spec:
         application: gateway
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -316,6 +321,7 @@ spec:
         application: web-gui
         tier: frontend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: web-gui
           image: {{ .Values.registry }}/samaritan/web-gui:latest
@@ -345,6 +351,7 @@ spec:
         application: project
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -409,6 +416,7 @@ spec:
         application: repository
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -493,6 +501,7 @@ spec:
         application: metrics
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -557,6 +566,7 @@ spec:
         application: parser
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -610,6 +620,7 @@ spec:
         application: metrics-churn
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -660,6 +671,7 @@ spec:
         application: metrics-collaboration
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -710,6 +722,7 @@ spec:
         application: metrics-contribution
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -760,6 +773,7 @@ spec:
         application: metrics-complexity
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -810,6 +824,7 @@ spec:
         application: metrics-functionchurn
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -860,6 +875,7 @@ spec:
         application: metrics-hunk
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -910,6 +926,7 @@ spec:
         application: metrics-interactivechurn
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -960,6 +977,7 @@ spec:
         application: metrics-keyword
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -1010,6 +1028,7 @@ spec:
         application: metrics-loc
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -1060,6 +1079,7 @@ spec:
         application: metrics-messagetokens
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -1110,6 +1130,7 @@ spec:
         application: metrics-nesting
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -1160,6 +1181,7 @@ spec:
         application: metrics-offender
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -1210,6 +1232,7 @@ spec:
         application: metrics-ownership
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -1260,6 +1283,7 @@ spec:
         application: metrics-pastauthors
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -1310,6 +1334,7 @@ spec:
         application: metrics-pastchanges
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -1360,6 +1385,7 @@ spec:
         application: metrics-patchtokens
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32
@@ -1410,6 +1436,7 @@ spec:
         application: metrics-relativechurn
         tier: backend
     spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
           image: {{ .Values.registry }}/busybox:1.32

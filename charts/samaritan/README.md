@@ -8,6 +8,7 @@
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| image.pullSecrets | list | `[]` | List of secret names to use when attempting to access private container image registries. The secrets are _assumed_ to be existing in the namespace into which the chart will be installed. |
 | ingress.hostname.api | string | `"api.samaritan.works"` | URL to use for the Samaritan API Service endpoint. |
 | ingress.hostname.web | string | `"explore.samaritan.works"` | URL to use for the Samaritan Web Application endpoint. |
 | ingress.provider | string | `"public"` | Ingress provider to use to provision publicly accessible URLs for services. Must be one of `public` for [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/) or `alb` for [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/). |

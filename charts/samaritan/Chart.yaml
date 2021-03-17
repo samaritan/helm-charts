@@ -7,6 +7,10 @@ type: application
 home: https://samaritan.works/
 sources:
   - https://github.com/samaritan
+dependencies:
+  - name: common
+    version: ~1.4.1
+    repository: https://charts.bitnami.com/bitnami
 maintainers:
   - name: Nuthan Munaiah
     email: nuthan.munaiah@securedecisions.com

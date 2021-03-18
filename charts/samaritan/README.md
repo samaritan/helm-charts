@@ -25,7 +25,7 @@
 | rabbitmq.protocol | string | `"amqp"` | URI scheme to use when connecting to RabbitMQ. Must be one of `amqp` for an unsecure connection or `amqps` for a secure connection. |
 | rabbitmq.user | string | `"samaritan"` | RabbitMQ application user. The services that use RabbitMQ for communication will use this as the user. |
 | redis.password | string | `nil` | **[Required]** Redis application password. The services that use Redis for caching will use this as the password. |
-| registry | string | `"110921400520.dkr.ecr.us-east-2.amazonaws.com"` | Container registry from which all images are pulled. |
+| registry | string | `"ghcr.io"` | Container registry from which all images are pulled. |
 | storage.provider | string | `"local"` | Storage provider to use for persistent storage in stateful services. Must be one of `local` for volume backed by [`hostPath`](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath) or `efs` for volume backed by Amazon Elastic File System. |
 | storage.providers.efs.fileSystemId | string | `""` | Unique identifier assigned to the Amazon Elastic File System (EFS). |
 | storage.providers.local.root | string | `"/data/"` | Absolute path of the directory on the node that will host the Kubernetes pods that will form the root of the persistent volume mapped onto the pods. |

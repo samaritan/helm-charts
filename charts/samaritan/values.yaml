@@ -1,7 +1,7 @@
 # Container images
 # 
 # registry -- Container registry from which all images are pulled.
-registry: "110921400520.dkr.ecr.us-east-2.amazonaws.com"
+registry: "ghcr.io"
 image:
   # -- List of secret names to use when attempting to access private container image registries. The secrets are _assumed_ to be existing in the namespace into which the chart will be installed.
   pullSecrets: []

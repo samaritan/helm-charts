@@ -39,12 +39,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: web-gui
+  name: web
   namespace: {{ .Release.Namespace | quote }}
 spec:
   type: NodePort
   selector:
-    application: web-gui
+    application: web
     tier: frontend
   ports:
     - name: http

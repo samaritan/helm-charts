@@ -304,27 +304,27 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-gui
+  name: web
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    application: web-gui
+    application: web
     tier: frontend
 spec:
   selector:
     matchLabels:
-      application: web-gui
+      application: web
       tier: frontend
   replicas: 1
   template:
     metadata:
       labels:
-        application: web-gui
+        application: web
         tier: frontend
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: web-gui
-          image: {{ .Values.registry }}/samaritan/web-gui:latest
+        - name: web
+          image: {{ .Values.registry }}/samaritan/web:latest
           ports:
             - containerPort: 80
           env:

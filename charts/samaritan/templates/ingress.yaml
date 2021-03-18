@@ -43,7 +43,7 @@ apiVersion: networking.k8s.io/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: web-gui
+  name: web
   namespace: {{ .Release.Namespace | quote }}
   annotations:
     kubernetes.io/ingress.class: {{ .Values.ingress.provider }}
@@ -64,10 +64,10 @@ spec:
             backend:
               {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
               service:
-                name: web-gui
+                name: web
                 port:
                   number: 80
               {{- else }}
-              serviceName: web-gui
+              serviceName: web
               servicePort: 80
               {{- end }}

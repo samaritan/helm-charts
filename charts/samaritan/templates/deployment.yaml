@@ -179,7 +179,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -187,7 +187,7 @@ spec:
               'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
             ]
         - name: init-mysql
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -256,7 +256,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -265,7 +265,7 @@ spec:
             ]
       containers:
         - name: nginx
-          image: {{ .Values.registry }}/nginx:1.19-alpine
+          image: {{ .Values.registry }}/samaritan/nginx:1.19-alpine
           ports:
             - name: http
               protocol: TCP
@@ -354,7 +354,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -419,7 +419,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -427,7 +427,7 @@ spec:
               'until nslookup rabbitmq; do echo "Waiting for Rabbit MQ"; sleep 3; done;',
             ]
         - name: init-redis
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -504,7 +504,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -569,7 +569,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -623,7 +623,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -674,7 +674,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -725,7 +725,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -776,7 +776,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -827,7 +827,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -878,7 +878,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -929,7 +929,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -980,7 +980,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -1031,7 +1031,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -1082,7 +1082,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -1133,7 +1133,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -1184,7 +1184,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -1235,7 +1235,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -1286,7 +1286,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -1337,7 +1337,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -1388,7 +1388,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",
@@ -1439,7 +1439,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
         - name: init-rabbitmq
-          image: {{ .Values.registry }}/busybox:1.32
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
           command:
             [
               "sh",

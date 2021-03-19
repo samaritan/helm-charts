@@ -196,7 +196,7 @@ spec:
             ]
       containers:
         - name: measures
-          image: {{ .Values.registry }}/samaritan/measures:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/measures:0.1.1-alpha
           resources:
             requests:
               cpu: "2"
@@ -363,7 +363,7 @@ spec:
             ]
       containers:
         - name: project
-          image: {{ .Values.registry }}/samaritan/project:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/project:0.1.1-alpha
           env:
             - name: MYSQL_HOST
               value: "mysql"
@@ -513,7 +513,7 @@ spec:
             ]
       containers:
         - name: metrics
-          image: {{ .Values.registry }}/samaritan/metrics:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics:0.1.1-alpha
           env:
             - name: MYSQL_HOST
               value: "mysql"

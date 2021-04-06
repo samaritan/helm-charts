@@ -1,0 +1,168 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: measures-migrations-0.2.0-alpha
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    job: measures-migrations
+    tier: backend
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        job: measures-migrations
+        tier: backend
+    spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
+      initContainers:
+        - name: init-mysql
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup mysql; do echo "Waiting for MySQL"; sleep 3; done;',
+            ]
+      containers:
+        - name: measures-migrations
+          image: {{ .Values.registry }}/samaritan/measures-migrations:0.2.0-alpha
+          args: ["migrate"]
+          env:
+            - name: FLYWAY_CONNECT_RETRIES
+              value: "10"
+            - name: MYSQL_HOST
+              value: "mysql"
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_ROOT_USER
+              value: "root"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.root_password
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.password
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: metrics-migrations-0.3.0-alpha
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    job: metrics-migrations
+    tier: backend
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        job: metrics-migrations
+        tier: backend
+    spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
+      initContainers:
+        - name: init-mysql
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup mysql; do echo "Waiting for MySQL"; sleep 3; done;',
+            ]
+      containers:
+        - name: metrics-migrations
+          image: {{ .Values.registry }}/samaritan/metrics-migrations:0.3.0-alpha
+          args: ["migrate"]
+          env:
+            - name: FLYWAY_CONNECT_RETRIES
+              value: "10"
+            - name: MYSQL_HOST
+              value: "mysql"
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_ROOT_USER
+              value: "root"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.root_password
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.password
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: project-migrations-0.2.0-alpha
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    job: project-migrations
+    tier: backend
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        job: project-migrations
+        tier: backend
+    spec:
+      {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
+      initContainers:
+        - name: init-mysql
+          image: {{ .Values.registry }}/samaritan/busybox:1.32
+          command:
+            [
+              "sh",
+              "-c",
+              'until nslookup mysql; do echo "Waiting for MySQL"; sleep 3; done;',
+            ]
+      containers:
+        - name: project-migrations
+          image: {{ .Values.registry }}/samaritan/project-migrations:0.2.0-alpha
+          args: ["migrate"]
+          env:
+            - name: FLYWAY_CONNECT_RETRIES
+              value: "10"
+            - name: MYSQL_HOST
+              value: "mysql"
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_ROOT_USER
+              value: "root"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.root_password
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: mysql.password
+      restartPolicy: Never

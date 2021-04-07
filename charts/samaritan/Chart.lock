@@ -1,6 +1,12 @@
 dependencies:
 - name: common
   repository: https://charts.bitnami.com/bitnami
-  version: 1.4.1
-digest: sha256:f4c721f9f5540fd2c585abc1413fb50f18403f7e664a87c1de08fbec7a2cf91b
-generated: "2021-03-17T11:40:25.228551145-04:00"
+  version: 1.4.2
+- name: elasticsearch
+  repository: https://charts.bitnami.com/bitnami
+  version: 14.5.3
+- name: fluentd
+  repository: https://charts.bitnami.com/bitnami
+  version: 3.6.4
+digest: sha256:a1e3286078b6bce8d889eddda2bd63aecfef6c61b65bbace9cfa7d91b219f97c
+generated: "2021-04-07T15:15:03.725138782-04:00"

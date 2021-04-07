@@ -11,6 +11,14 @@ dependencies:
   - name: common
     version: ~1.4.1
     repository: https://charts.bitnami.com/bitnami
+  - condition: observe.enabled
+    name: elasticsearch
+    version: ~14.5.3
+    repository: https://charts.bitnami.com/bitnami
+  - condition: observe.enabled
+    name: fluentd
+    version: ~3.6.4
+    repository: https://charts.bitnami.com/bitnami
 maintainers:
   - name: Nuthan Munaiah
     email: nuthan.munaiah@securedecisions.com

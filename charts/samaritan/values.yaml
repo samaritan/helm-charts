@@ -1,3 +1,10 @@
+# Global values
+#
+global:
+  kibanaEnabled: true
+  coordinating:
+    name: coordinating-only
+
 # Container images
 # 
 # registry -- Container registry from which all images are pulled.
@@ -69,3 +76,58 @@ rabbitmq:
 redis:
   # -- **[Required]** Redis application password. The services that use Redis for caching will use this as the password.
   password: null
+
+# Enable Elasticsearch, Fluentd, and Kibana (EFK) for Samaritan
+#
+observe:
+  # -- Set to `true` if you wish to install EFK (Elasticsearch, Fluentd, and Kibana) stack to observe Samaritan.
+  enabled: false
+
+# Fluentd configuration to appropriately parse log information emitted by Samaritan services.
+#
+fluentd:
+  forwarder:
+    # -- Configuration map to use to set up Fluentd to appropriately parse Samaritan logs.
+    # @default -- Check `values.yaml`
+    configMapFiles:
+      fluentd-inputs.conf: |
+        # HTTP input for the liveness and readiness probes
+        <source>
+          @type http
+          port 9880
+        </source>
+
+        # Get the logs from the containers running in the node
+        <source>
+          @type tail
+          path /var/log/containers/*.log
+          exclude_path /var/log/containers/*fluentd*.log
+          pos_file /opt/bitnami/fluentd/logs/buffers/fluentd-docker.pos
+          tag kubernetes.*
+          read_from_head true
+          <parse>
+            @type none
+            # TODO: Enable `regexp` parsing to ensure components of the log
+            #       message are parsed
+            # @type regexp
+            # expression /^(?<time>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2},\d{3})\s-\s(?<module>[^ ]*)\s-\s(?<level>[^ ]*)\s-\s(?<message>.*)$/
+            # time_format %Y-%m-%d %H:%M:%S,%L
+          </parse>
+        </source>
+
+        # Enrich with kubernetes metadata
+        <filter kubernetes.**>
+          @type kubernetes_metadata
+        </filter>
+  aggregator:
+    # -- Name of the configuration map to use to set up Fluentd aggregator to forward logs to Elasticsearch.
+    configMap: fluentd-aggregator-cm
+
+# Kibana configuration (via Elasticsearch) to enable ingress.
+#
+elasticsearch:
+  kibana:
+    ingress:
+      enabled: true
+      # -- URL to use for the Kibana ingress.
+      hostname: "observe.samaritan.local"

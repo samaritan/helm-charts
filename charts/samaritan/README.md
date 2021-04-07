@@ -8,6 +8,12 @@
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| elasticsearch.kibana.ingress.enabled | bool | `true` |  |
+| elasticsearch.kibana.ingress.hostname | string | `"observe.samaritan.local"` | URL to use for the Kibana ingress. |
+| fluentd.aggregator.configMap | string | `"fluentd-aggregator-cm"` | Name of the configuration map to use to set up Fluentd aggregator to forward logs to Elasticsearch. |
+| fluentd.forwarder.configMapFiles | object | Check `values.yaml` | Configuration map to use to set up Fluentd to appropriately parse Samaritan logs. |
+| global.coordinating.name | string | `"coordinating-only"` |  |
+| global.kibanaEnabled | bool | `true` |  |
 | image.pullSecrets | list | `[]` | List of secret names to use when attempting to access private container image registries. The secrets are _assumed_ to be existing in the namespace into which the chart will be installed. |
 | ingress.hostname.api | string | `"api.samaritan.works"` | URL to use for the Samaritan API Service endpoint. |
 | ingress.hostname.web | string | `"explore.samaritan.works"` | URL to use for the Samaritan Web Application endpoint. |
@@ -18,6 +24,7 @@
 | mysql.externalName | string | `""` | URL of the external MySQL instance. |
 | mysql.port | int | `3306` | MySQL port. |
 | mysql.root.password | string | `nil` | **[Required]** MySQL root password. |
+| observe.enabled | bool | `false` | Set to `true` if you wish to install EFK (Elasticsearch, Fluentd, and Kibana) stack to observe Samaritan. |
 | rabbitmq.external | bool | `false` | Set to `true` if you wish you use a RabbitMQ instance provisioned outside of the Kubernetes deployment. |
 | rabbitmq.externalName | string | `""` | URL of the external RabbitMQ instance. |
 | rabbitmq.password | string | `nil` | **[Required]** RabbitMQ application password. The services that use RabbitMQ for communication will use this as the password. |

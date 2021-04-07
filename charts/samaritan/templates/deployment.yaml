@@ -196,7 +196,7 @@ spec:
             ]
       containers:
         - name: measures
-          image: {{ .Values.registry }}/samaritan/measures:0.1.1-alpha
+          image: {{ .Values.registry }}/samaritan/measures:0.1.2-alpha
           resources:
             requests:
               cpu: "2"
@@ -274,7 +274,7 @@ spec:
             - mountPath: /etc/nginx/conf.d
               name: nginx-gateway
         - name: gateway
-          image: {{ .Values.registry }}/samaritan/gateway:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/gateway:0.1.1-alpha
           env:
             - name: GATEWAY_HOST
               value: "127.0.0.1"
@@ -363,7 +363,7 @@ spec:
             ]
       containers:
         - name: project
-          image: {{ .Values.registry }}/samaritan/project:0.1.1-alpha
+          image: {{ .Values.registry }}/samaritan/project:0.1.2-alpha
           env:
             - name: MYSQL_HOST
               value: "mysql"
@@ -436,7 +436,7 @@ spec:
             ]
       containers:
         - name: repository
-          image: {{ .Values.registry }}/samaritan/repository:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/repository:0.1.1-alpha
           resources:
             requests:
               cpu: "1"
@@ -578,7 +578,7 @@ spec:
             ]
       containers:
         - name: parser
-          image: {{ .Values.registry }}/samaritan/parser:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/parser:0.1.1-alpha
           resources:
             requests:
               memory: "4Gi"

@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: measures-migrations-0.2.0-alpha
+  name: measures-migrations-0.3.0-alpha
   namespace: {{ .Release.Namespace | quote }}
   labels:
     job: measures-migrations
@@ -27,7 +27,7 @@ spec:
             ]
       containers:
         - name: measures-migrations
-          image: {{ .Values.registry }}/samaritan/measures-migrations:0.2.0-alpha
+          image: {{ .Values.registry }}/samaritan/measures-migrations:0.3.0-alpha
           args: ["migrate"]
           env:
             - name: FLYWAY_CONNECT_RETRIES

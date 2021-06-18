@@ -324,7 +324,7 @@ spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       containers:
         - name: web
-          image: {{ .Values.registry }}/samaritan/web:0.1.1-alpha
+          image: {{ .Values.registry }}/samaritan/web:0.2.0-alpha
           ports:
             - containerPort: 80
           env:

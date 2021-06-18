@@ -196,7 +196,7 @@ spec:
             ]
       containers:
         - name: measures
-          image: {{ .Values.registry }}/samaritan/measures:0.1.2-alpha
+          image: {{ .Values.registry }}/samaritan/measures:0.2.0-alpha
           resources:
             requests:
               cpu: "2"

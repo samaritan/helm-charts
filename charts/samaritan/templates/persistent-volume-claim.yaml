@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: pvc-repositories
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   accessModes:
     - ReadWriteMany
@@ -23,6 +25,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: pvc-rabbitmq
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   accessModes:
     - ReadWriteMany
@@ -43,6 +47,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: pvc-mysql
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   accessModes:
     - ReadWriteMany

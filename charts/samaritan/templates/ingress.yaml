@@ -8,6 +8,8 @@ kind: Ingress
 metadata:
   name: api
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
     kubernetes.io/ingress.class: {{ .Values.ingress.provider }}
     {{- if eq .Values.ingress.provider "alb" }}
@@ -45,6 +47,8 @@ kind: Ingress
 metadata:
   name: web
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
     kubernetes.io/ingress.class: {{ .Values.ingress.provider }}
     {{- if eq .Values.ingress.provider "alb" }}

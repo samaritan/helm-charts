@@ -4,6 +4,8 @@ kind: Service
 metadata:
   name: mysql
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   {{- if .Values.mysql.external }}
   type: ExternalName
@@ -25,6 +27,8 @@ kind: Service
 metadata:
   name: gateway
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   type: NodePort
   selector:
@@ -41,6 +45,8 @@ kind: Service
 metadata:
   name: web
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   type: NodePort
   selector:
@@ -57,6 +63,8 @@ kind: Service
 metadata:
   name: rabbitmq
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   {{- if .Values.rabbitmq.external }}
   type: ExternalName
@@ -78,6 +86,8 @@ kind: Service
 metadata:
   name: redis
   namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     application: redis

@@ -8,6 +8,7 @@ metadata:
   labels:
     application: mysql
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -19,6 +20,7 @@ spec:
       labels:
         application: mysql
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       containers:
@@ -62,6 +64,7 @@ metadata:
   labels:
     application: rabbitmq
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -73,6 +76,7 @@ spec:
       labels:
         application: rabbitmq
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       containers:
@@ -113,6 +117,7 @@ metadata:
   labels:
     application: redis
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -124,6 +129,7 @@ spec:
       labels:
         application: redis
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       containers:
@@ -164,6 +170,7 @@ metadata:
   labels:
     application: measures
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -175,6 +182,7 @@ spec:
       labels:
         application: measures
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -241,6 +249,7 @@ metadata:
   labels:
     application: gateway
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -252,6 +261,7 @@ spec:
       labels:
         application: gateway
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -309,6 +319,7 @@ metadata:
   labels:
     application: web
     tier: frontend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -320,6 +331,7 @@ spec:
       labels:
         application: web
         tier: frontend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       containers:
@@ -339,6 +351,7 @@ metadata:
   labels:
     application: project
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -350,6 +363,7 @@ spec:
       labels:
         application: project
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -404,6 +418,7 @@ metadata:
   labels:
     application: repository
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -415,6 +430,7 @@ spec:
       labels:
         application: repository
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -489,6 +505,7 @@ metadata:
   labels:
     application: metrics
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -500,6 +517,7 @@ spec:
       labels:
         application: metrics
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -554,6 +572,7 @@ metadata:
   labels:
     application: parser
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -565,6 +584,7 @@ spec:
       labels:
         application: parser
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -608,6 +628,7 @@ metadata:
   labels:
     application: metrics-churn
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -619,6 +640,7 @@ spec:
       labels:
         application: metrics-churn
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -659,6 +681,7 @@ metadata:
   labels:
     application: metrics-collaboration
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -670,6 +693,7 @@ spec:
       labels:
         application: metrics-collaboration
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -710,6 +734,7 @@ metadata:
   labels:
     application: metrics-contribution
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -721,6 +746,7 @@ spec:
       labels:
         application: metrics-contribution
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -761,6 +787,7 @@ metadata:
   labels:
     application: metrics-complexity
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -772,6 +799,7 @@ spec:
       labels:
         application: metrics-complexity
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -812,6 +840,7 @@ metadata:
   labels:
     application: metrics-functionchurn
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -823,6 +852,7 @@ spec:
       labels:
         application: metrics-functionchurn
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -863,6 +893,7 @@ metadata:
   labels:
     application: metrics-hunk
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -874,6 +905,7 @@ spec:
       labels:
         application: metrics-hunk
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -914,6 +946,7 @@ metadata:
   labels:
     application: metrics-interactivechurn
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -925,6 +958,7 @@ spec:
       labels:
         application: metrics-interactivechurn
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -965,6 +999,7 @@ metadata:
   labels:
     application: metrics-keyword
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -976,6 +1011,7 @@ spec:
       labels:
         application: metrics-keyword
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -1016,6 +1052,7 @@ metadata:
   labels:
     application: metrics-loc
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -1027,6 +1064,7 @@ spec:
       labels:
         application: metrics-loc
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -1067,6 +1105,7 @@ metadata:
   labels:
     application: metrics-messagetokens
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -1078,6 +1117,7 @@ spec:
       labels:
         application: metrics-messagetokens
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -1118,6 +1158,7 @@ metadata:
   labels:
     application: metrics-nesting
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -1129,6 +1170,7 @@ spec:
       labels:
         application: metrics-nesting
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -1169,6 +1211,7 @@ metadata:
   labels:
     application: metrics-offender
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -1180,6 +1223,7 @@ spec:
       labels:
         application: metrics-offender
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -1220,6 +1264,7 @@ metadata:
   labels:
     application: metrics-ownership
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -1231,6 +1276,7 @@ spec:
       labels:
         application: metrics-ownership
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -1271,6 +1317,7 @@ metadata:
   labels:
     application: metrics-pastauthors
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -1282,6 +1329,7 @@ spec:
       labels:
         application: metrics-pastauthors
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -1322,6 +1370,7 @@ metadata:
   labels:
     application: metrics-pastchanges
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -1333,6 +1382,7 @@ spec:
       labels:
         application: metrics-pastchanges
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -1373,6 +1423,7 @@ metadata:
   labels:
     application: metrics-patchtokens
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -1384,6 +1435,7 @@ spec:
       labels:
         application: metrics-patchtokens
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:
@@ -1424,6 +1476,7 @@ metadata:
   labels:
     application: metrics-relativechurn
     tier: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -1435,6 +1488,7 @@ spec:
       labels:
         application: metrics-relativechurn
         tier: backend
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       {{- include "samaritan.imagePullSecrets" . | nindent 6 }}
       initContainers:

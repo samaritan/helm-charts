@@ -31,6 +31,8 @@ spec:
               protocol: TCP
               containerPort: {{ .Values.mysql.port }}
           env:
+            - name: MYSQL_ROOT_HOST
+              value: "%"
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:

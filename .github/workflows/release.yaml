@@ -1,11 +1,6 @@
 name: Release Charts
 
-on:
-  push:
-    branches:
-      - development
-    paths:
-      - "charts/**"
+on: workflow_dispatch
 
 jobs:
   release:

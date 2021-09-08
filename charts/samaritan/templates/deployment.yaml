@@ -454,7 +454,7 @@ spec:
             ]
       containers:
         - name: repository
-          image: {{ .Values.registry }}/samaritan/repository:0.1.1-alpha
+          image: {{ .Values.registry }}/samaritan/repository:0.1.2-alpha
           resources:
             requests:
               cpu: "1"

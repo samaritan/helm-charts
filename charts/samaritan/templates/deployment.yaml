@@ -454,7 +454,7 @@ spec:
             ]
       containers:
         - name: repository
-          image: {{ .Values.registry }}/samaritan/repository:0.1.2-alpha
+          image: {{ .Values.registry }}/samaritan/repository:0.2.0-alpha
           resources:
             requests:
               cpu: "1"
@@ -868,7 +868,7 @@ spec:
             ]
       containers:
         - name: metrics-functionchurn
-          image: {{ .Values.registry }}/samaritan/metrics-functionchurn:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-functionchurn:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -974,7 +974,7 @@ spec:
             ]
       containers:
         - name: metrics-interactivechurn
-          image: {{ .Values.registry }}/samaritan/metrics-interactivechurn:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-interactivechurn:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"

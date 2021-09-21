@@ -206,7 +206,7 @@ spec:
             ]
       containers:
         - name: measures
-          image: {{ .Values.registry }}/samaritan/measures:0.2.0-alpha
+          image: {{ .Values.registry }}/samaritan/measures:0.3.0-alpha
           resources:
             requests:
               cpu: "2"
@@ -656,7 +656,7 @@ spec:
             ]
       containers:
         - name: metrics-churn
-          image: {{ .Values.registry }}/samaritan/metrics-churn:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-churn:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -709,7 +709,7 @@ spec:
             ]
       containers:
         - name: metrics-collaboration
-          image: {{ .Values.registry }}/samaritan/metrics-collaboration:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-collaboration:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -762,7 +762,7 @@ spec:
             ]
       containers:
         - name: metrics-contribution
-          image: {{ .Values.registry }}/samaritan/metrics-contribution:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-contribution:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -815,7 +815,7 @@ spec:
             ]
       containers:
         - name: metrics-complexity
-          image: {{ .Values.registry }}/samaritan/metrics-complexity:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-complexity:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -868,7 +868,7 @@ spec:
             ]
       containers:
         - name: metrics-functionchurn
-          image: {{ .Values.registry }}/samaritan/metrics-functionchurn:0.2.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-functionchurn:0.3.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -921,7 +921,7 @@ spec:
             ]
       containers:
         - name: metrics-hunk
-          image: {{ .Values.registry }}/samaritan/metrics-hunk:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-hunk:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -974,7 +974,7 @@ spec:
             ]
       containers:
         - name: metrics-interactivechurn
-          image: {{ .Values.registry }}/samaritan/metrics-interactivechurn:0.2.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-interactivechurn:0.3.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -1027,7 +1027,7 @@ spec:
             ]
       containers:
         - name: metrics-keyword
-          image: {{ .Values.registry }}/samaritan/metrics-keyword:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-keyword:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -1080,7 +1080,7 @@ spec:
             ]
       containers:
         - name: metrics-loc
-          image: {{ .Values.registry }}/samaritan/metrics-loc:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-loc:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -1133,7 +1133,7 @@ spec:
             ]
       containers:
         - name: metrics-messagetokens
-          image: {{ .Values.registry }}/samaritan/metrics-messagetokens:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-messagetokens:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -1186,7 +1186,7 @@ spec:
             ]
       containers:
         - name: metrics-nesting
-          image: {{ .Values.registry }}/samaritan/metrics-nesting:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-nesting:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -1239,7 +1239,7 @@ spec:
             ]
       containers:
         - name: metrics-offender
-          image: {{ .Values.registry }}/samaritan/metrics-offender:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-offender:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -1292,7 +1292,7 @@ spec:
             ]
       containers:
         - name: metrics-ownership
-          image: {{ .Values.registry }}/samaritan/metrics-ownership:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-ownership:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -1345,7 +1345,7 @@ spec:
             ]
       containers:
         - name: metrics-pastauthors
-          image: {{ .Values.registry }}/samaritan/metrics-pastauthors:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-pastauthors:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -1398,7 +1398,7 @@ spec:
             ]
       containers:
         - name: metrics-pastchanges
-          image: {{ .Values.registry }}/samaritan/metrics-pastchanges:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-pastchanges:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -1451,7 +1451,7 @@ spec:
             ]
       containers:
         - name: metrics-patchtokens
-          image: {{ .Values.registry }}/samaritan/metrics-patchtokens:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-patchtokens:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"
@@ -1504,7 +1504,7 @@ spec:
             ]
       containers:
         - name: metrics-relativechurn
-          image: {{ .Values.registry }}/samaritan/metrics-relativechurn:0.1.0-alpha
+          image: {{ .Values.registry }}/samaritan/metrics-relativechurn:0.2.0-alpha
           env:
             - name: RABBIT_PROTOCOL
               value: "{{ .Values.rabbitmq.protocol }}"

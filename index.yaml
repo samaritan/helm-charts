@@ -2,6 +2,35 @@ apiVersion: v1
 entries:
   samaritan:
   - apiVersion: v2
+    created: "2021-10-01T19:23:42.811373814Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: ~1.4.1
+    - condition: observe.enabled
+      name: elasticsearch
+      repository: https://charts.bitnami.com/bitnami
+      version: ~14.5.3
+    - condition: observe.enabled
+      name: fluentd
+      repository: https://charts.bitnami.com/bitnami
+      version: ~3.6.4
+    description: Platform to collect and analyze vulnerability discovery metrics.
+    digest: cc79a8aac6151574c10ed8bafdce9b4044858f89835dfe9b10657e16a7fcd2e3
+    home: https://samaritan.works/
+    kubeVersion: v1.18-0 - 1.20-0
+    maintainers:
+    - email: nuthan.munaiah@securedecisions.com
+      name: Nuthan Munaiah
+      url: https://nuthanmunaiah.github.io/
+    name: samaritan
+    sources:
+    - https://github.com/samaritan
+    type: application
+    urls:
+    - https://github.com/samaritan/helm-charts/releases/download/samaritan-0.2.0-alpha/samaritan-0.2.0-alpha.tgz
+    version: 0.2.0-alpha
+  - apiVersion: v2
     created: "2021-08-05T15:56:46.786781147Z"
     dependencies:
     - name: common
@@ -30,4 +59,4 @@ entries:
     urls:
     - https://github.com/samaritan/helm-charts/releases/download/samaritan-0.1.0-alpha/samaritan-0.1.0-alpha.tgz
     version: 0.1.0-alpha
-generated: "2021-08-05T15:56:46.786786647Z"
+generated: "2021-10-01T19:23:42.811385114Z"

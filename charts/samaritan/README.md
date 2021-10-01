@@ -1,6 +1,6 @@
 # Samaritan
 
-![Version: 0.1.0-alpha](https://img.shields.io/badge/Version-0.1.0--alpha-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.0-alpha](https://img.shields.io/badge/Version-0.2.0--alpha-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 [Samaritan](https://samaritan.works) is a vulnerability discovery metrics collection and analysis platform. The platform is being developed as part of the _Human Dimensions of Software Engineering Processes_ project funded by the Defense Advanced Research Projects Agency (DARPA) under a Small Business Innovation Research (SBIR) grant.
 
